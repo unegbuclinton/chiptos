@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "DEBUG=chiptos:* next dev",
+    "dev": "set DEBUG=chiptos:* && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

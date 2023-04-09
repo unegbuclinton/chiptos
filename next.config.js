@@ -7,10 +7,11 @@ const nextConfig = {
     domains: [
       "chiptos-collector.s3.amazonaws.com",
       "placekitten.com",
-      'lh3.googleusercontent.com',
-      'openseauserdata.com'
-    ]
-  }
-}
+      "lh3.googleusercontent.com",
+      "openseauserdata.com",
+      "i.seadn.io",
+    ],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
