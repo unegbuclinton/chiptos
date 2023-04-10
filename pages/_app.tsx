@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { useW3MProvider, useW3MState, useW3MContext } from "../hooks/useW3M";
@@ -394,7 +395,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             <div className="container">
               <Navbar />
               <div className="container-inner">
-                <Component {...pageProps} />
+                <AnimatePresence>
+                  <Component {...pageProps} />
+                </AnimatePresence>
               </div>
               <Footer />
             </div>

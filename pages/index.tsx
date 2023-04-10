@@ -3,7 +3,8 @@ import Head from "next/head";
 import { useW3MContext } from "../hooks/useW3M";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import "../styles/Home.module.css";
+// import styles from "../components/components.scss";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   Button,
@@ -32,12 +33,17 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Icons from "../lib/icons";
 import SingleAsset from "./SingleAsset";
+import CollectionBanner from "@components/CollectionBanner";
+import CollectionBannerSkeleton from "@components/CollectionBannerSkeleton";
 
 const settings = {
   apiKey: env.ALCHEMY_API_KEY, // Replace with your Alchemy API Key.
   network: Network.ETH_MAINNET, // Replace with your network.
 };
-
+const MenuItemVariants: Variants = {
+  hide: { opacity: 0 },
+  show: { opacity: 1 },
+};
 const alchemy = new Alchemy(settings);
 
 const trimAddress = (addr: string) =>
@@ -79,10 +85,8 @@ const Home: NextPage = () => {
 
   const ignoreFilterVals = ["googleusercontent"];
 
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const [showSingleAsset, setShowSingleAsset] = useState(false);
+
   //&
   const AssetCard = (props: any) => {
     const { asset, idx } = props;
@@ -94,8 +98,6 @@ const Home: NextPage = () => {
           p: "4px",
           border: "2px solid transparent",
           "&:hover": {
-            border: "2px solid",
-            borderColor: "primary_b",
             transform: "scale(1.1)",
             transition: "all .2s ease-in-out",
           },
@@ -103,17 +105,43 @@ const Home: NextPage = () => {
         onClick={() => {
           store_setSingleAsset(asset);
           store_setCurrentView(E_Views.SINGLE);
+          setShowSingleAsset(true);
         }}
       >
-        <Image
-          src={asset.image_preview_url || "http://placekitten.com/200/200"}
-          alt=""
-          width={200}
-          height={200}
-          layout="responsive"
-          style={{ background: "linear-gradient(80deg, #222 45%, #333, #111)" }}
-        />
-        <h4 className="asset_img" style={{ margin: 0, padding: 0 }}>
+        <Box
+          sx={{
+            p: "4px",
+            border: "2px solid transparent",
+            "&:hover": {
+              border: "2px solid",
+              borderColor: "primary_b",
+            },
+          }}
+        >
+          <motion.div
+            key="assets"
+            variants={MenuItemVariants}
+            initial="hide"
+            animate="show"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <Image
+              src={asset.image_preview_url || "http://placekitten.com/200/200"}
+              alt=""
+              width={200}
+              height={200}
+              layout="responsive"
+              style={{
+                background: "linear-gradient(80deg, #222 45%, #333, #111)",
+              }}
+            />
+          </motion.div>
+        </Box>
+        <h4
+          className="asset_img"
+          style={{ margin: 0, padding: 0, marginTop: "2px" }}
+        >
           #{asset.token_id}
         </h4>
       </Box>
@@ -129,43 +157,52 @@ const Home: NextPage = () => {
       const { heading, items, openIndex, setOpenIndex, idx } = props;
 
       return (
-        <Box
-          sx={{
-            borderBottom: "1px solid",
-            borderColor: "grey_4",
-            fontSize: ".8rem",
-            p: 1,
-          }}
+        <motion.div
+          key="assets"
+          variants={MenuItemVariants}
+          initial="hide"
+          animate="show"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <Button
+          <Box
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
+              borderBottom: "1px solid",
+              borderColor: "grey_4",
+              fontSize: ".8rem",
+              p: 1,
             }}
-            onClick={() => setOpenIndex(openIndex === idx ? -1 : idx)}
           >
-            <div>{heading}</div> +
-          </Button>
-          {openIndex === idx &&
-            items &&
-            items.map((item: string) => (
-              <Button
-                key={item}
-                onClick={() => setSearchValue(item)}
-                sx={{
-                  color: "grey_15",
-                  fontWeight: "normal",
-                  fontSize: ".7rem !important",
-                  width: "100%",
-                  textAlign: "left",
-                  justifyContent: "flex-start",
-                }}
-              >
-                {item}
-              </Button>
-            ))}
-        </Box>
+            <Button
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+              onClick={() => setOpenIndex(openIndex === idx ? -1 : idx)}
+            >
+              <div>{heading}</div> +
+            </Button>
+            {openIndex === idx &&
+              items &&
+              items.map((item: string) => (
+                <Button
+                  key={item}
+                  onClick={() => setSearchValue(item)}
+                  sx={{
+                    color: "grey_15",
+                    fontWeight: "normal",
+                    fontSize: ".7rem !important",
+                    width: "100%",
+                    textAlign: "left",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  {item}
+                </Button>
+              ))}
+          </Box>
+        </motion.div>
       );
     };
 
@@ -184,70 +221,79 @@ const Home: NextPage = () => {
     }, []);
 
     return (
-      <Flex
-        sx={{
-          border: "1px solid transparent",
-          width: filterOpen ? "20rem" : "3rem",
-          flexDirection: "column",
-          p: "3px",
-          maxHeight: "50rem",
-          overflowY: "auto",
-          mr: "1rem",
-        }}
+      <motion.div
+        key="assets"
+        variants={MenuItemVariants}
+        initial="hide"
+        animate="show"
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4 }}
       >
-        {filterOpen ? (
-          <>
-            <Flex
-              sx={{
-                alignItems: "center",
-                border: "0px solid",
-                borderBottom: "1px solid",
-                borderColor: "primary_b",
-                "&:hover": { background: "primary_t" },
-              }}
-            >
-              <Input
+        <Flex
+          sx={{
+            border: "1px solid transparent",
+            width: filterOpen ? "20rem" : "3rem",
+            flexDirection: "column",
+            p: "3px",
+            maxHeight: "50rem",
+            overflowY: "auto",
+            mr: "1rem",
+          }}
+        >
+          {filterOpen ? (
+            <>
+              <Flex
                 sx={{
-                  width: "16rem",
-                  border: "0px solid transparent",
-                  fontFamily: "monospace",
-                  pl: ".8rem",
+                  alignItems: "center",
+                  border: "0px solid",
+                  borderBottom: "1px solid",
+                  borderColor: "primary_b",
+                  "&:hover": { background: "primary_t" },
                 }}
-                value={searchValue}
-                onChange={handleSearchChange}
-                ref={focRef}
-                placeholder="Search"
-              />
-              <Button p="0" sx={{ "&:hover": { outline: "none" } }}>
-                <Search size="20" />
+              >
+                <Input
+                  sx={{
+                    width: "16rem",
+                    border: "0px solid transparent",
+                    fontFamily: "monospace",
+                    pl: ".8rem",
+                  }}
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  ref={focRef}
+                  placeholder="Search"
+                />
+                <Button p="0" sx={{ "&:hover": { outline: "none" } }}>
+                  <Search size="20" />
+                </Button>
+                {/* <Button p='0' onClick={handleClose}><CloseOutline size='30'/></Button> */}
+              </Flex>
+              {Object.entries(
+                store_contractData[store_currentContract].trait_map
+              ).map((trait: any, idx: number) => (
+                <AccordionItem
+                  key={idx}
+                  idx={idx}
+                  heading={trait[0]}
+                  items={trait[1]}
+                  openIndex={openIndex}
+                  setOpenIndex={setOpenIndex}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              <Button
+                p="0"
+                sx={{ borderRadius: "50%", width: "2rem", height: "2rem" }}
+                onClick={() => setFilterOpen(true)}
+              >
+                <Search size="26" />
               </Button>
-              {/* <Button p='0' onClick={handleClose}><CloseOutline size='30'/></Button> */}
-            </Flex>
-            {Object.entries(
-              store_contractData[store_currentContract].trait_map
-            ).map((trait: any, idx: number) => (
-              <AccordionItem
-                key={idx}
-                idx={idx}
-                heading={trait[0]}
-                items={trait[1]}
-                openIndex={openIndex}
-                setOpenIndex={setOpenIndex}
-              />
-            ))}
-          </>
-        ) : (
-          <>
-            <Button
-              p="0"
-              sx={{ borderRadius: "50%", width: "2rem", height: "2rem" }}
-              onClick={() => setFilterOpen(true)}
-            >
-              <Search size="26" />
-            </Button>
-          </>
-        )}
-      </Flex>
+            </>
+          )}
+        </Flex>
+      </motion.div>
     );
   };
 
@@ -767,7 +813,16 @@ const Home: NextPage = () => {
   };
 
   //&
+  const [show, setShow] = useState(true);
+  const [shouldRender, setRender] = useState(show);
+  console.log(shouldRender);
+  useEffect(() => {
+    if (show) setRender(true);
+  }, [show]);
 
+  const onAnimationEnd = () => {
+    if (!show) setRender(false);
+  };
   return (
     <div>
       <Head>
@@ -824,7 +879,10 @@ const Home: NextPage = () => {
                               : "transparent",
                           margin: 0,
                         }}
-                        onClick={() => store_setCurrentContract(ctr[0])}
+                        onClick={() => {
+                          store_setCurrentContract(ctr[0]);
+                          setShow((prev) => !prev);
+                        }}
                       >
                         {ctr[0].toUpperCase()}
                       </Button>
@@ -967,77 +1025,14 @@ const Home: NextPage = () => {
               }}
             >
               {!store_loading ? (
-                <>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      height: "16rem",
-                      alignItems: "center",
-                      background: "#333333",
-                      width: "100%",
-                      overflow: "hidden",
-                      mt: ".5rem",
-                      backgroundImage: `url(${store_contractData[store_currentContract]?.collection?.banner_image_url})`,
-                      backgroundPosition: "50% 50%",
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                    style={{
-                      opacity: isMounted ? "1" : "0",
-                      transition: "opacity 0.5s ease-in-out;",
-                    }}
-                  >
-                    {store_contractData[store_currentContract]?.asset_contract
-                      ?.total_supply > 0 && (
-                      <Button
-                        sx={{
-                          color: "black",
-                          background: "primary_b",
-                          p: ".5rem 3rem",
-                          fontSize: "1.4rem !important",
-                          mr: "8rem",
-                        }}
-                      >
-                        <Flex sx={{ flexDirection: "column" }}>
-                          <Box sx={{ fontSize: "1rem" }}>
-                            {
-                              store_contractData[store_currentContract]
-                                .asset_contract.total_supply
-                            }
-                            /
-                            {
-                              store_contractData[store_currentContract].assets
-                                .length
-                            }
-                            REMAINING
-                          </Box>
-                          MINT NOW!
-                        </Flex>
-                      </Button>
-                    )}
-                  </Box>
-                </>
+                <CollectionBanner
+                  contractData={store_contractData[store_currentContract]}
+                />
               ) : (
                 <>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      height: "16rem",
-                      alignItems: "center",
-                      background: "#333333",
-                      width: "100%",
-                      overflow: "hidden",
-                      mt: ".5rem",
-                      backgroundImage: `url(${store_contractData[store_currentContract]?.collection?.banner_image_url})`,
-                      backgroundPosition: "50% 50%",
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  >
-                    <Skeleton />
-                  </Box>
+                  <CollectionBannerSkeleton
+                    contractData={store_contractData[store_currentContract]}
+                  />
                 </>
               )}
             </Box>
@@ -1323,12 +1318,12 @@ const Home: NextPage = () => {
                       >
                         <Box sx={{}}>
                           {!store_allLoaded ? (
-                            <Spinner />
+                            <Skeleton />
                           ) : store_currentView === E_Views.FULL ? (
                             searchValue ? (
-                              <Spinner />
+                              <Skeleton />
                             ) : (
-                              <Spinner />
+                              <Skeleton />
                             )
                           ) : searchValue ? (
                             `No owned NFT's found with '${searchValue}' in '${store_currentContract}'`
@@ -1396,6 +1391,7 @@ const Home: NextPage = () => {
                 singleAssetAddress={store_singleAsset?.owner?.address}
                 username={store_singleAsset.owner?.user?.username}
                 address={store_singleAsset.owner?.address}
+                show={showSingleAsset}
               />
             )}
 
@@ -1445,7 +1441,7 @@ const Home: NextPage = () => {
           </>
         )}
 
-        {/* <pre style={{maxWidth: '80vw', wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}>total X: {store_contractData['Chiptos X'] && store_contractData['Chiptos X'].assets.length}</pre> */}
+        {/* <pre style={{maxWidth: '80vw', wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}>`total `X: {store_contractData['Chiptos X'] && store_contractData['Chiptos X'].assets.length}</pre> */}
         {/* <pre style={{maxWidth: '80vw', wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}>total 512: {store_contractData['Chiptos 512'] && store_contractData['Chiptos 512'].assets.length}</pre> */}
         {/* <pre style={{maxWidth: '80vw', wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}>all loaded: {store_allLoaded+''}</pre> */}
         {/* <pre style={{maxWidth: '80vw', wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}>trait_map 512: {store_contractData['Chiptos 512'] && JSON.stringify(store_contractData['Chiptos 512'].trait_map, null, 2)}</pre> */}

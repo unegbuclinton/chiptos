@@ -53,7 +53,7 @@ const Navbar = () => {
           {toggle ? (
             <Box
               sx={{
-                backgroundImage: `url('/ChiptosLogo_3.svg')`,
+                backgroundImage: `url('/ChiptosLogo_2.svg')`,
                 width: "8rem",
                 height: "100%",
                 border: "1px solid transparent",
@@ -64,7 +64,7 @@ const Navbar = () => {
           ) : (
             <Box
               sx={{
-                backgroundImage: `url('/ChiptosLogo_2.svg')`,
+                backgroundImage: `url('/ChiptosLogo_3.svg')`,
                 width: "8rem",
                 height: "100%",
                 border: "1px solid transparent",

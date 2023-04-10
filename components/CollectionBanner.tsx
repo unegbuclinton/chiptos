@@ -1,9 +1,22 @@
 import { Box, Button, Flex } from "theme-ui";
 import { useState, useEffect } from "react";
 import styles from "../styles/components.module.css";
+import { motion } from "framer-motion";
 const CollectionBanner = ({ contractData }) => {
+  const MenuItemVariants: Variants = {
+    hide: { opacity: 0 },
+    show: { opacity: 1 },
+  };
+
   return (
-    <div>
+    <motion.div
+      key="banner"
+      variants={MenuItemVariants}
+      initial="hide"
+      animate="show"
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -19,7 +32,6 @@ const CollectionBanner = ({ contractData }) => {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}
-        // className={}
       >
         {contractData?.asset_contract?.total_supply > 0 && (
           <Button
@@ -42,7 +54,7 @@ const CollectionBanner = ({ contractData }) => {
           </Button>
         )}
       </Box>
-    </div>
+    </motion.div>
   );
 };
 
