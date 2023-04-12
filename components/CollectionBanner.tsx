@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "../styles/components.module.css";
 import { motion } from "framer-motion";
 const CollectionBanner = ({ contractData }) => {
-  const MenuItemVariants: Variants = {
+  const MenuItemVariants = {
     hide: { opacity: 0 },
     show: { opacity: 1 },
   };
