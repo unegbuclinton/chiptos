@@ -19,8 +19,8 @@ const SingleAsset = ({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0, width: "100%", height: "100%" }}
+        animate={{ opacity: 1, width: "100%" }}
         transition={{ duration: 0.5 }}
       >
         {show && (
@@ -125,6 +125,8 @@ const SingleAsset = ({
                         "linear-gradient(80deg, #222 45%, #333, #111)",
                       zIndex: "8",
                       transitionDelay: "2s",
+                      width: "100%",
+                      height: "100%",
                       transition: "1s",
                     }}
                   />
