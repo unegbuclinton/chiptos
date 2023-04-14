@@ -126,7 +126,7 @@ const SingleAsset = ({
                       zIndex: "8",
                       transitionDelay: "2s",
                       width: "100%",
-                      height: "100%",
+                      height: "auto",
                       transition: "1s",
                     }}
                   />
